@@ -13,18 +13,22 @@ header {
     text-align: center;
 }
 
+nav a {
+    color: #fff;
+    text-decoration: none;
+    margin: 0 15px;
+}
+
+nav a:hover {
+    text-decoration: underline;
+}
+
 main {
     padding: 20px;
 }
 
-#upload {
-    margin-bottom: 20px;
-}
-
-input[type="file"],
-input[type="text"] {
-    display: block;
-    margin: 10px 0;
+.hidden {
+    display: none;
 }
 
 button {
@@ -37,6 +41,11 @@ button {
 
 button:hover {
     background-color: #0056b3;
+}
+
+.error {
+    color: red;
+    margin-top: 10px;
 }
 
 #videoList {
