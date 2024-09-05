@@ -4,11 +4,81 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Video Share Site</title>
-    <link rel="stylesheet" href="styles.css">
+    <style>
+        /* Combined CSS */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f1f1f1;
+        }
+
+        header {
+            background-color: #333;
+            color: #fff;
+            padding: 10px;
+            text-align: center;
+        }
+
+        nav a {
+            color: #fff;
+            text-decoration: none;
+            margin: 0 15px;
+        }
+
+        main {
+            padding: 20px;
+        }
+
+        button {
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        #videoList {
+            display: flex;
+            flex-wrap: wrap;
+        }
+
+        .video-item {
+            margin: 10px;
+        }
+
+        .video-item video {
+            width: 300px;
+            height: 200px;
+        }
+
+        #upload, #login {
+            margin-bottom: 20px;
+        }
+
+        input[type="file"],
+        input[type="text"],
+        input[type="email"],
+        input[type="password"] {
+            display: block;
+            margin: 10px 0;
+        }
+    </style>
 </head>
 <body>
     <header>
         <h1>Video Share Site</h1>
+        <nav>
+            <a href="#home" id="homeLink">Home</a>
+            <a href="#popular" id="popularLink">Popular</a>
+            <a href="#search" id="searchLink">Search</a>
+            <a href="#login" id="loginLink">Login</a>
+            <a href="#signup" id="signupLink">Sign Up</a>
+        </nav>
     </header>
     <main>
         <section id="upload">
@@ -21,11 +91,137 @@
             <h2>Videos</h2>
             <div id="videoList"></div>
         </section>
+        <section id="login" style="display: none;">
+            <h2>Login</h2>
+            <input type="email" id="email" placeholder="Email">
+            <input type="password" id="password" placeholder="Password">
+            <button id="loginButton">Login</button>
+        </section>
+        <section id="signup" style="display: none;">
+            <h2>Sign Up</h2>
+            <input type="email" id="signupEmail" placeholder="Email">
+            <input type="password" id="signupPassword" placeholder="Password">
+            <button id="signupButton">Sign Up</button>
+        </section>
     </main>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-storage.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js"></script>
-    <script src="app.js"></script>
+    <script>
+        // Firebase configuration
+        const firebaseConfig = {
+    		apiKey: "AIzaSyCIhqkSEWYKlokRjW24YgzNefFiNCUkaMY",
+    		authDomain: "wls-videos-bd5d4.firebaseapp.com",
+    		projectId: "wls-videos-bd5d4",
+    		storageBucket: "wls-videos-bd5d4.appspot.com",
+    		messagingSenderId: "641099201066",
+    		appId: "1:641099201066:web:d70dcb35093cfa77a8a153"
+        };
+
+        // Initialize Firebase
+        const app = firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const firestore = firebase.firestore();
+        const storage = firebase.storage();
+
+        // Upload video function
+        document.getElementById('uploadButton').addEventListener('click', async () => {
+            const file = document.getElementById('videoFile').files[0];
+            const title = document.getElementById('videoTitle').value;
+            if (file && title) {
+                try {
+                    const storageRef = storage.ref(`videos/${file.name}`);
+                    await storageRef.put(file);
+                    const url = await storageRef.getDownloadURL();
+                    await firestore.collection('videos').add({
+                        title: title,
+                        url: url
+                    });
+                    document.getElementById('videoFile').value = '';
+                    document.getElementById('videoTitle').value = '';
+                    loadVideos();
+                } catch (error) {
+                    console.error('Error uploading video:', error);
+                }
+            }
+        });
+
+        // Load videos function
+        async function loadVideos() {
+            const videoList = document.getElementById('videoList');
+            videoList.innerHTML = '';
+            try {
+                const querySnapshot = await firestore.collection('videos').get();
+                querySnapshot.forEach((doc) => {
+                    const videoData = doc.data();
+                    const videoItem = document.createElement('div');
+                    videoItem.classList.add('video-item');
+                    videoItem.innerHTML = `
+                        <h3>${videoData.title}</h3>
+                        <video controls>
+                            <source src="${videoData.url}" type="video/mp4">
+                            Your browser does not support the video tag.
+                        </video>
+                    `;
+                    videoList.appendChild(videoItem);
+                });
+            } catch (error) {
+                console.error('Error loading videos:', error);
+            }
+        }
+
+        // Load videos on page load
+        window.onload = loadVideos;
+
+        // Login function
+        document.getElementById('loginButton').addEventListener('click', async () => {
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            try {
+                await auth.signInWithEmailAndPassword(email, password);
+                alert('Logged in successfully');
+                document.getElementById('login').style.display = 'none';
+                document.getElementById('upload').style.display = 'block';
+            } catch (error) {
+                console.error('Error logging in:', error);
+            }
+        });
+
+        // Sign Up function
+        document.getElementById('signupButton').addEventListener('click', async () => {
+            const email = document.getElementById('signupEmail').value;
+            const password = document.getElementById('signupPassword').value;
+            try {
+                await auth.createUserWithEmailAndPassword(email, password);
+                alert('Signed up successfully');
+                document.getElementById('signup').style.display = 'none';
+                document.getElementById('login').style.display = 'block';
+            } catch (error) {
+                console.error('Error signing up:', error);
+            }
+        });
+
+        // Navigation handling
+        document.getElementById('homeLink').addEventListener('click', () => {
+            document.getElementById('upload').style.display = 'block';
+            document.getElementById('login').style.display = 'none';
+            document.getElementById('signup').style.display = 'none';
+        });
+
+        document.getElementById('loginLink').addEventListener('click', () => {
+            document.getElementById('upload').style.display = 'none';
+            document.getElementById('login').style.display = 'block';
+            document.getElementById('signup').style.display = 'none';
+        });
+
+        document.getElementById('signupLink').addEventListener('click', () => {
+            document.getElementById('upload').style.display = 'none';
+            document.getElementById('login').style.display = 'none';
+            document.getElementById('signup').style.display = 'block';
+        });
+
+        // Other pages like Popular, Search, etc., can be similarly handled
+    </script>
 </body>
 </html>
