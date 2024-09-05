@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Video Share Site</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+        <h1>Video Share Site</h1>
+    </header>
+    <main>
+        <section id="upload">
+            <h2>Upload Video</h2>
+            <input type="file" id="videoFile" accept="video/*">
+            <input type="text" id="videoTitle" placeholder="Enter video title">
+            <button id="uploadButton">Upload</button>
+        </section>
+        <section id="videos">
+            <h2>Videos</h2>
+            <div id="videoList"></div>
+        </section>
+    </main>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-storage.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
