@@ -19,10 +19,11 @@ const storage = firebase.storage();
 document.addEventListener('DOMContentLoaded', function() {
     if (document.getElementById('loginButton')) {
         document.getElementById('loginButton').addEventListener('click', async () => {
-            const email = document.getElementById('loginEmail').value;
+            const username = document.getElementById('loginUsername').value;
             const password = document.getElementById('loginPassword').value;
+
             try {
-                await auth.signInWithEmailAndPassword(email, password);
+                const user = await auth.signInWithEmailAndPassword(username + '@example.com', password); // Use username to create email for Firebase Authentication
                 window.location.href = 'index.html';
                 document.getElementById('loginError').classList.add('hidden');
             } catch (error) {
@@ -35,10 +36,12 @@ document.addEventListener('DOMContentLoaded', function() {
     // Handle Sign Up
     if (document.getElementById('signupButton')) {
         document.getElementById('signupButton').addEventListener('click', async () => {
-            const email = document.getElementById('signupEmail').value;
+            const username = document.getElementById('signupUsername').value;
             const password = document.getElementById('signupPassword').value;
+
             try {
-                await auth.createUserWithEmailAndPassword(email, password);
+                const user = await auth.createUserWithEmailAndPassword(username + '@example.com', password); // Use username to create email for Firebase Authentication
+                await database.ref('users/' + user.user.uid).set({ username: username });
                 window.location.href = 'login.html';
                 document.getElementById('signupError').classList.add('hidden');
             } catch (error) {
@@ -62,7 +65,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         title: title,
                         url: url,
                         views: 0,
-                        uploader: auth.currentUser.email
+                        uploader: (await auth.currentUser).uid
                     });
                     document.getElementById('videoTitle').value = '';
                     document.getElementById('videoFile').value = '';
