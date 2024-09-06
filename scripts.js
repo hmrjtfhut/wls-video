@@ -7,7 +7,7 @@ const firebaseConfig = {
     projectId: "wls-videos-bd5d4",
     storageBucket: "wls-videos-bd5d4.appspot.com",
     messagingSenderId: "641099201066",
-    appId: "1:641099201066:web:f00f68c5d24e1aa2a8a153" 
+    appId: "1:641099201066:web:f00f68c5d24e1aa2a8a153"
 };
 
 // Initialize Firebase
