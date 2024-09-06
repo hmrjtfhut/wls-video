@@ -11,10 +11,10 @@ const firebaseConfig = {
 // Initialize Firebase
 firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
-const firestore = firebase.firestore();
+const database = firebase.database();
 const storage = firebase.storage();
 
-// Login functionality
+// Handle Login
 document.addEventListener('DOMContentLoaded', function() {
     if (document.getElementById('loginButton')) {
         document.getElementById('loginButton').addEventListener('click', async () => {
@@ -31,7 +31,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // Sign-up functionality
+    // Handle Sign Up
     if (document.getElementById('signupButton')) {
         document.getElementById('signupButton').addEventListener('click', async () => {
             const email = document.getElementById('signupEmail').value;
@@ -47,7 +47,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // Video upload functionality
+    // Handle Video Upload
     if (document.getElementById('uploadButton')) {
         document.getElementById('uploadButton').addEventListener('click', async () => {
             const file = document.getElementById('videoFile').files[0];
@@ -57,7 +57,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     const storageRef = storage.ref(`videos/${file.name}`);
                     await storageRef.put(file);
                     const url = await storageRef.getDownloadURL();
-                    await firestore.collection('videos').add({
+                    await database.ref('videos').push({
                         title: title,
                         url: url,
                         views: 0,
@@ -78,15 +78,15 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // Load videos
+    // Load Videos
     if (document.getElementById('videoList')) {
         async function loadVideos() {
             const videoList = document.getElementById('videoList');
             videoList.innerHTML = '';
             try {
-                const querySnapshot = await firestore.collection('videos').get();
-                querySnapshot.forEach((doc) => {
-                    const videoData = doc.data();
+                const snapshot = await database.ref('videos').once('value');
+                snapshot.forEach((childSnapshot) => {
+                    const videoData = childSnapshot.val();
                     const videoItem = document.createElement('div');
                     videoItem.classList.add('video-item');
                     videoItem.innerHTML = `
@@ -96,7 +96,7 @@ document.addEventListener('DOMContentLoaded', function() {
                             Your browser does not support the video tag.
                         </video>
                         <p>Views: ${videoData.views}</p>
-                        <button onclick="incrementViews('${doc.id}')">Watch</button>
+                        <button onclick="incrementViews('${childSnapshot.key}')">Watch</button>
                     `;
                     videoList.appendChild(videoItem);
                 });
@@ -111,9 +111,9 @@ document.addEventListener('DOMContentLoaded', function() {
     // Increment views for a video
     window.incrementViews = async function(videoId) {
         try {
-            const videoRef = firestore.collection('videos').doc(videoId);
-            const doc = await videoRef.get();
-            const views = doc.data().views;
+            const videoRef = database.ref(`videos/${videoId}`);
+            const snapshot = await videoRef.once('value');
+            const views = snapshot.val().views;
             await videoRef.update({ views: views + 1 });
             loadVideos();
         } catch (error) {
