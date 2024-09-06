@@ -1,9 +1,7 @@
-// scripts.js
 // Firebase configuration
 const firebaseConfig = {
     apiKey: "AIzaSyCIhqkSEWYKlokRjW24YgzNefFiNCUkaMY",
     authDomain: "wls-videos-bd5d4.firebaseapp.com",
-    databaseURL: "https://wls-videos-bd5d4-default-rtdb.firebaseio.com",
     projectId: "wls-videos-bd5d4",
     storageBucket: "wls-videos-bd5d4.appspot.com",
     messagingSenderId: "641099201066",
@@ -11,12 +9,12 @@ const firebaseConfig = {
 };
 
 // Initialize Firebase
-const app = firebase.initializeApp(firebaseConfig);
+firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
 const firestore = firebase.firestore();
 const storage = firebase.storage();
 
-// Handle login functionality
+// Login functionality
 document.addEventListener('DOMContentLoaded', function() {
     if (document.getElementById('loginButton')) {
         document.getElementById('loginButton').addEventListener('click', async () => {
@@ -33,7 +31,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // Handle sign-up functionality
+    // Sign-up functionality
     if (document.getElementById('signupButton')) {
         document.getElementById('signupButton').addEventListener('click', async () => {
             const email = document.getElementById('signupEmail').value;
@@ -49,7 +47,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // Handle video upload functionality
+    // Video upload functionality
     if (document.getElementById('uploadButton')) {
         document.getElementById('uploadButton').addEventListener('click', async () => {
             const file = document.getElementById('videoFile').files[0];

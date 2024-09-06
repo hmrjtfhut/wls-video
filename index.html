@@ -3,39 +3,29 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Video Share Site</title>
+    <title>Login - Video Share Site</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <header>
         <h1>Video Share Site</h1>
         <nav>
-            <a href="index.html" id="homeLink">Home</a>
-            <a href="#" id="uploadLink" style="display: none;">Upload</a>
-            <a href="login.html" id="loginLink">Login</a>
-            <a href="signup.html" id="signupLink">Sign Up</a>
+            <a href="index.html">Home</a>
+            <a href="login.html" class="active">Login</a>
+            <a href="signup.html">Sign Up</a>
         </nav>
     </header>
     <main>
-        <!-- Upload Video -->
-        <section id="upload" class="hidden">
-            <h2>Upload Video</h2>
-            <input type="text" id="videoTitle" placeholder="Enter video title">
-            <input type="file" id="videoFile" accept="video/*">
-            <button id="uploadButton">Upload</button>
-            <div id="uploadError" class="error hidden"></div>
-        </section>
-
-        <!-- Videos List -->
-        <section id="videos">
-            <h2>Videos</h2>
-            <div id="videoList"></div>
+        <section id="login">
+            <h2>Login</h2>
+            <input type="email" id="loginEmail" placeholder="Email">
+            <input type="password" id="loginPassword" placeholder="Password">
+            <button id="loginButton">Login</button>
+            <div id="loginError" class="error hidden"></div>
         </section>
     </main>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-storage.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js"></script>
     <script src="scripts.js"></script>
 </body>
 </html>
