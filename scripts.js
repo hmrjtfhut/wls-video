@@ -2,6 +2,7 @@
 const firebaseConfig = {
     apiKey: "AIzaSyCIhqkSEWYKlokRjW24YgzNefFiNCUkaMY",
     authDomain: "wls-videos-bd5d4.firebaseapp.com",
+    databaseURL: "https://wls-videos-bd5d4-default-rtdb.firebaseio.com",
     projectId: "wls-videos-bd5d4",
     storageBucket: "wls-videos-bd5d4.appspot.com",
     messagingSenderId: "641099201066",
